@@ -3,24 +3,12 @@ import sys
 
 import pygame
 import requests
-import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument("first_coord", nargs='*')
-parser.add_argument("second_coord", nargs='*')
-parser.add_argument("delta", nargs='*')
-args = parser.parse_args()
 
 api_server = "http://static-maps.yandex.ru/1.x/"
 
-# lon = "37.530887"
-# lat = "55.703118"
-# delta = "0.002"
-
-lon = args.first_coord
-lat = args.second_coord
-delta = args.delta
-
+lon = "37.530887"
+lat = "55.703118"
+delta = "0.002"
 
 params = {
     "ll": ",".join([lon, lat]),
@@ -38,6 +26,8 @@ while pygame.event.wait().type != pygame.QUIT:
     with open(map_file, "wb") as file:
         file.write(response.content)
         print(1)
+    
+    pressed = pygame.key.get_pressed
     
     screen.blit(pygame.image.load(map_file), (0, 0))
     pygame.display.flip()
