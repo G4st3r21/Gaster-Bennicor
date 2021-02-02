@@ -1,6 +1,5 @@
 import os
 import sys
-
 import pygame
 import requests
 
@@ -25,6 +24,7 @@ pygame.init()
 screen = pygame.display.set_mode((600, 450))
 screen.blit(pygame.image.load(map_file), (0, 0))
 pygame.display.flip()
+
 while pygame.event.wait().type != pygame.QUIT:
     pass
 pygame.quit()
