@@ -37,7 +37,6 @@ while pygame.event.wait().type != pygame.QUIT:
     map_file = "map.png"
     with open(map_file, "wb") as file:
         file.write(response.content)
-        print(1)
     
     screen.blit(pygame.image.load(map_file), (0, 0))
     pygame.display.flip()
