@@ -14,8 +14,8 @@ args = parser.parse_args()
 # params 37.530887 55.703118 15
 map_file = "map.png"
 api_server = "http://static-maps.yandex.ru/1.x/"
-lon = float(args.first_coord)
-lat = float(args.second_coord)
+lon = str(args.first_coord)
+lat = str(args.second_coord)
 z = int(args.scale)
 scale_step = 1
 coords_step = 0.005
@@ -38,13 +38,13 @@ while running:
                 z += scale_step
 
     if pressed_key[pygame.K_UP]:
-        lon = str(lon + coords_step)
+        lat = str(float(lat) + coords_step)
     if pressed_key[pygame.K_DOWN]:
-        lon = str(lon - coords_step)
+        lat = str(float(lat) - coords_step)
     if pressed_key[pygame.K_LEFT]:
-        lat = str(lat - coords_step)
+        lon = str(float(lon) - coords_step)
     if pressed_key[pygame.K_RIGHT]:
-        lat = str(lat + coords_step)
+        lon = str(float(lon) + coords_step)
 
     params = {
         "ll": ",".join([lon, lat]),
