@@ -8,14 +8,14 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("first_coord")
 parser.add_argument("second_coord")
-parser.add_argument("delta")
+parser.add_argument("scale", default=15)
 args = parser.parse_args()
 
 api_server = "http://static-maps.yandex.ru/1.x/"
 lon = str(args.first_coord)
 lat = str(args.second_coord)
-delta = float(args.delta)
-step = 0.01
+z = int(args.scale)
+scale_step = 1
 map_file = "map.png"
 
 pygame.init()
@@ -28,17 +28,17 @@ while running:
             running = False
         
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_PAGEDOWN:
-                delta += step
-            elif event.key == pygame.K_PAGEUP:
-                delta -= step
-
+            if event.key == pygame.K_PAGEDOWN and z >= 1:
+                z -= scale_step
+            elif event.key == pygame.K_PAGEUP and z <= 21:
+                z += scale_step
+    
     params = {
         "ll": ",".join([lon, lat]),
-        "spn": ",".join([str(delta), str(delta)]),
+        "z": z,
         "l": "map"
     }
-    
+
     response = requests.get(api_server, params=params)
 
     with open(map_file, "wb") as file:
