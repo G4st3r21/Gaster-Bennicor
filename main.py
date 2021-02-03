@@ -7,13 +7,13 @@ from itertools import cycle
 from button import Button
 
 
+# params 37.530887 55.703118 15
 parser = argparse.ArgumentParser()
 parser.add_argument("first_coord")
 parser.add_argument("second_coord")
 parser.add_argument("scale")
 args = parser.parse_args()
 
-# params 37.530887 55.703118 15
 pygame.init()
 font = pygame.font.Font(None, 25)
 map_file = "map.png"
@@ -25,6 +25,7 @@ lon = str(args.first_coord)
 lat = str(args.second_coord)
 z = int(args.scale)
 l = next(maps)
+mark_coords = lon, lat
 
 scale_step = 1
 coords_step = 0.005
@@ -83,7 +84,8 @@ while running:
         params = {
             "ll": ",".join([lon, lat]),
             "z": z,
-            "l": l
+            "l": l,
+            "pt": f"{mark_coords[0]},{mark_coords[1]},pm2vvl"
         }
 
         response = requests.get(api_server, params=params)
