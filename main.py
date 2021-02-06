@@ -67,13 +67,13 @@ while running:
                 z = str(int(z) + scale_step)
                 changes_made = True
             elif event.key == pygame.K_TAB and new_coords:
-                args = new_coords.split()
-                if len(args) == 3:
+                args = new_coords.split()  # Получаем аргументы из строки
+                if len(args) == 3:  # Записываем их в переменные
                     lon = args[0]
                     lat = args[1]
                     z = args[2]
                     changes_made = True
-                    textinput.clear_text()
+                    textinput.clear_text()  # Очищаем строку
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 click = True
@@ -102,8 +102,11 @@ while running:
         l = next(maps)
         changes_made = True
 
+    textinput.update(events)  # Обновление строки ввода
+
     if changes_made:
         screen.fill((0, 0, 0))
+        # Если числа введены не верно, то прога не вылетает, а просто не выводит изображение
         try:
             params = {
                 "ll": ",".join([lon, lat]),
@@ -122,7 +125,6 @@ while running:
 
     # Работа строки ввода
     screen.blit(textinput.get_surface(), (150, 450))
-    textinput.update(events)
 
     changes_made = False
     pygame.display.flip()
