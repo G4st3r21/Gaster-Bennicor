@@ -11,9 +11,9 @@ from button import Button
 # params 37.530887 55.703118 15
 parser = argparse.ArgumentParser()
 # Если аргументов нет, то выбираются по умолчанию
-parser.add_argument("first_coord", nargs='?')
-parser.add_argument("second_coord", nargs='?')
-parser.add_argument("scale", nargs='?')
+parser.add_argument("first_coord", nargs='?', default=37.530887)
+parser.add_argument("second_coord", nargs='?', default=55.703118)
+parser.add_argument("scale", nargs='?', default=15)
 args = parser.parse_args()
 
 pygame.init()
@@ -28,14 +28,9 @@ titles = cycle(["Схема", "Спутник", "Гибрид"])
 
 api_server = "http://static-maps.yandex.ru/1.x/"
 
-if args.scale is not None:
-    lon = str(args.first_coord)
-    lat = str(args.second_coord)
-    z = int(args.scale)
-else:
-    lon = '37.530887'
-    lat = '55.703118'
-    z = '15'
+lon = str(args.first_coord)
+lat = str(args.second_coord)
+z = int(args.scale)
 l = next(maps)
 mark_coords = lon, lat
 
@@ -59,40 +54,36 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN:
-            new_coords = textinput.get_text()
             if event.key == pygame.K_PAGEDOWN and int(z) >= 1:
                 z = str(int(z) - scale_step)
                 changes_made = True
             elif event.key == pygame.K_PAGEUP and int(z) <= 21:
                 z = str(int(z) + scale_step)
                 changes_made = True
-            elif event.key == pygame.K_TAB and new_coords:
-                args = new_coords.split()  # Получаем аргументы из строки
-                if len(args) == 3:  # Записываем их в переменные
+            elif event.key == pygame.K_UP:
+                lat = str(float(lat) + coords_step)
+                changes_made = True
+            elif event.key == pygame.K_DOWN:
+                lat = str(float(lat) - coords_step)
+                changes_made = True
+            elif event.key == pygame.K_LEFT:
+                lon = str(float(lon) - coords_step)
+                changes_made = True
+            elif event.key == pygame.K_RIGHT:
+                lon = str(float(lon) + coords_step)
+                changes_made = True
+            elif event.key == pygame.K_RETURN:
+                args = textinput.get_text().split()  # Получаем аргументы из строки
+                
+                if len(args) == 2:  # Записываем их в переменные
                     lon = args[0]
                     lat = args[1]
-                    z = args[2]
+                    mark_coords = lon, lat
                     changes_made = True
                     textinput.clear_text()  # Очищаем строку
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 click = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                click = False
-
-    if pressed_key[pygame.K_UP]:
-        lat = str(float(lat) + coords_step)
-        changes_made = True
-    if pressed_key[pygame.K_DOWN]:
-        lat = str(float(lat) - coords_step)
-        changes_made = True
-    if pressed_key[pygame.K_LEFT]:
-        lon = str(float(lon) - coords_step)
-        changes_made = True
-    if pressed_key[pygame.K_RIGHT]:
-        lon = str(float(lon) + coords_step)
-        changes_made = True
 
     map_button.update()
 
@@ -105,8 +96,7 @@ while running:
     textinput.update(events)  # Обновление строки ввода
 
     if changes_made:
-        screen.fill((0, 0, 0))
-        # Если числа введены не верно, то прога не вылетает, а просто не выводит изображение
+        # Если числа введены неверно, то прога не вылетает, а просто не выводит изображение
         try:
             params = {
                 "ll": ",".join([lon, lat]),
@@ -124,6 +114,7 @@ while running:
             print(E)
 
     # Работа строки ввода
+    screen.fill(pygame.Color("black"), (150, 450, screen.get_width(), screen.get_height()))
     screen.blit(textinput.get_surface(), (150, 450))
 
     changes_made = False
