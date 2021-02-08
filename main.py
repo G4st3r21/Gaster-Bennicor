@@ -117,6 +117,13 @@ while running:
     screen.fill(pygame.Color("black"), (150, 450, screen.get_width(), screen.get_height()))
     screen.blit(textinput.get_surface(), (150, 450))
 
+    # Вывод адреса обьекта
+    screen.fill(pygame.Color("black"), (300, 0, screen.get_width(), 25))
+    text = font.render("Адрес искомого объекта", 1, pygame.Color("white")) # Вставить переменную с настоящим адресом
+    text_rect = text.get_rect()
+    text_rect.center = (300 * 1.5, 25 * 0.5)
+    screen.blit(text, text_rect)
+
     changes_made = False
     pygame.display.flip()
     clock.tick(60)
