@@ -74,7 +74,7 @@ while running:
                 changes_made = True
             elif event.key == pygame.K_RETURN:
                 args = textinput.get_text().split()  # Получаем аргументы из строки
-                
+
                 if len(args) == 2:  # Записываем их в переменные
                     lon = args[0]
                     lat = args[1]
@@ -114,7 +114,8 @@ while running:
             print(E)
 
     # Работа строки ввода
-    screen.fill(pygame.Color("black"), (150, 450, screen.get_width(), screen.get_height()))
+    screen.fill(pygame.Color("black"), (150, 450,
+                                        screen.get_width(), screen.get_height()))
     screen.blit(textinput.get_surface(), (150, 450))
 
     changes_made = False
