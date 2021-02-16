@@ -6,10 +6,9 @@ import argparse
 import pygame_textinput
 from itertools import cycle
 from button import Button
-from geocode import request
+from geocode import get_coords, get_address
 
 
-# params 37.530887 55.703118 15
 parser = argparse.ArgumentParser()
 # Если аргументов нет, то выбираются по умолчанию
 parser.add_argument("first_coord", nargs='?', default=37.530887)
@@ -18,7 +17,9 @@ parser.add_argument("scale", nargs='?', default=15)
 args = parser.parse_args()
 
 pygame.init()
-font = pygame.font.Font(None, 25)
+font = pygame.font.Font(None, 25) # Основной шрифт
+address_font = pygame.font.Font(None, 20) # Шрифт для вывода адреса
+
 clock = pygame.time.Clock()
 textinput = pygame_textinput.TextInput()  # Объект textinput
 textinput.text_color = (255, 255, 255)
@@ -33,6 +34,7 @@ lat = str(args.second_coord)
 z = int(args.scale)
 l = next(maps)
 mark_coords = lon, lat
+address = get_address(lat + " " + lon)
 
 scale_step = 1
 coords_step = 0.005
@@ -80,29 +82,29 @@ while running:
 
     x, y = pygame.mouse.get_pos()
 
-    # Работа кнопок-----------------------------------------------
+    # Обработка нажатий на кнопки
     if map_button.collide((x, y)) and click:
         map_button.set_text(next(titles))
         l = next(maps)
         changes_made = True
+
     if find_button.collide((x, y)) and click:
-        arg = textinput.get_text()  # Получаем аргументы из строки
-        if len(list(arg)) > 1:
-            arg = arg.split()
-        else:
-            arg = list(arg)
-        coords = request(arg).split()
+        arg = textinput.get_text()  # Получаем введенный адрес
+        coords = get_coords(arg)
+        address = get_address(coords)
 
         if coords:  # Записываем их в переменные
-            lon = coords[0]
-            lat = coords[1]
+            lon, lat = coords.split()
             mark_coords = lon, lat
             changes_made = True
             textinput.clear_text()  # Очищаем строку
-    if reset_button.collide((x, y)) and click:
+    
+    if reset_button.collide((x, y)) and click: # Обнуляем все переменные
         lon = str(args.first_coord)
         lat = str(args.second_coord)
+        z = int(args.scale)
         mark_coords = lon, lat
+        address = get_address(lat + " " + lon)
         changes_made = True
 
     textinput.update(events)  # Обновление строки ввода
@@ -126,17 +128,16 @@ while running:
             print(E)
 
     # Работа строки ввода
-    screen.fill(pygame.Color("black"), (150, 450,
-                                        screen.get_width(), screen.get_height()))
+    screen.fill(pygame.Color("black"), (150, 450, screen.get_width(), screen.get_height()))
     screen.blit(textinput.get_surface(), (150, 450))
 
     # Вывод адреса обьекта
-    screen.fill(pygame.Color("black"), (300, 0, screen.get_width(), 25))
-    text = font.render("Адрес искомого объекта", 1, pygame.Color("white")) # Вставить переменную с настоящим адресом
+    screen.fill(pygame.Color("black"), (0, 0, 500, 50))
+    text = address_font.render(address, 1, pygame.Color("white")) # Вставить переменную с настоящим адресом
     text_rect = text.get_rect()
-    text_rect.center = (300 * 1.5, 25 * 0.5)
+    text_rect.center = (500 * 0.5, 50 * 0.5)
     screen.blit(text, text_rect)
-    
+
     # Обновление кнопок
     map_button.update()
     find_button.update()
