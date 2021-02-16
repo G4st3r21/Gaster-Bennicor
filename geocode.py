@@ -24,4 +24,5 @@ def get_address(args):
 
     address = response['response']['GeoObjectCollection']['featureMember'][0]
     address = address["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["text"]
+    print(address)
     return address

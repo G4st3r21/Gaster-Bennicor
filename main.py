@@ -34,7 +34,7 @@ lat = str(args.second_coord)
 z = int(args.scale)
 l = next(maps)
 mark_coords = lon, lat
-address = get_address(lat + " " + lon)
+address = get_address(lon + " " + lat)
 
 scale_step = 1
 coords_step = 0.005
@@ -104,7 +104,7 @@ while running:
         lat = str(args.second_coord)
         z = int(args.scale)
         mark_coords = lon, lat
-        address = get_address(lat + " " + lon)
+        address = get_address(lon + " " + lat)
         changes_made = True
 
     textinput.update(events)  # Обновление строки ввода
