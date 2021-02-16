@@ -19,8 +19,8 @@ args = parser.parse_args()
 
 pygame.init()
 font = pygame.font.Font(None, 25)
-textinput = pygame_textinput.TextInput()  # Объект textinput
 clock = pygame.time.Clock()
+textinput = pygame_textinput.TextInput()  # Объект textinput
 textinput.text_color = (255, 255, 255)
 textinput.antialias = False
 map_file = "map.png"
@@ -28,7 +28,6 @@ maps = cycle(["map", "sat", "sat,skl"])
 titles = cycle(["Схема", "Спутник", "Гибрид"])
 
 api_server = "http://static-maps.yandex.ru/1.x/"
-
 lon = str(args.first_coord)
 lat = str(args.second_coord)
 z = int(args.scale)
@@ -93,7 +92,7 @@ while running:
         else:
             arg = list(arg)
         coords = request(arg).split()
-        print(coords)
+
         if coords:  # Записываем их в переменные
             lon = coords[0]
             lat = coords[1]
@@ -103,6 +102,7 @@ while running:
     if reset_button.collide((x, y)) and click:
         lon = str(args.first_coord)
         lat = str(args.second_coord)
+        mark_coords = lon, lat
         changes_made = True
 
     textinput.update(events)  # Обновление строки ввода
@@ -110,7 +110,6 @@ while running:
     if changes_made:
         # Если числа введены неверно, то прога не вылетает, а просто не выводит изображение
         try:
-            print(z, l, lon, lat, mark_coords, sep='\n')
             params = {
                 "ll": ",".join([lon, lat]),
                 "z": z,
