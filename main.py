@@ -17,11 +17,12 @@ parser.add_argument("scale", nargs='?', default=15)
 args = parser.parse_args()
 
 pygame.init()
-font = pygame.font.Font(None, 25) # Основной шрифт
-address_font = pygame.font.Font(None, 20) # Шрифт для вывода адреса
+font = pygame.font.Font(None, 25)  # Основной шрифт
+address_font = pygame.font.Font(None, 20)  # Шрифт для вывода адреса
 
 clock = pygame.time.Clock()
-textinput = pygame_textinput.TextInput()  # Объект textinput
+textinput = pygame_textinput.TextInput(
+    cursor_color=(255, 255, 255))  # Объект textinput
 textinput.text_color = (255, 255, 255)
 textinput.antialias = False
 map_file = "map.png"
@@ -98,8 +99,8 @@ while running:
             mark_coords = lon, lat
             changes_made = True
             textinput.clear_text()  # Очищаем строку
-    
-    if reset_button.collide((x, y)) and click: # Обнуляем все переменные
+
+    if reset_button.collide((x, y)) and click:  # Обнуляем все переменные
         lon = str(args.first_coord)
         lat = str(args.second_coord)
         z = int(args.scale)
@@ -128,15 +129,25 @@ while running:
             print(E)
 
     # Работа строки ввода
-    screen.fill(pygame.Color("black"), (150, 450, screen.get_width(), screen.get_height()))
+    screen.fill(pygame.Color("black"), (150, 450,
+                                        screen.get_width(), screen.get_height()))
     screen.blit(textinput.get_surface(), (150, 450))
 
     # Вывод адреса обьекта
     screen.fill(pygame.Color("black"), (0, 0, 500, 50))
-    text = address_font.render(address, 1, pygame.Color("white")) # Вставить переменную с настоящим адресом
-    text_rect = text.get_rect()
-    text_rect.center = (500 * 0.5, 50 * 0.5)
-    screen.blit(text, text_rect)
+    # Вставить переменную с настоящим адресом
+    if len(address) < 50:
+        text1 = address_font.render(address, 1, pygame.Color("white"))
+        text2 = address_font.render('', 1, pygame.Color("white"))
+    else:
+        text1 = address_font.render(address[:50], 1, pygame.Color("white"))
+        text2 = address_font.render(address[50:], 1, pygame.Color("white"))
+    text_rect1 = text1.get_rect()
+    text_rect1.center = (500 * 0.5, 30 * 0.5)
+    text_rect2 = text2.get_rect()
+    text_rect2.center = (500 * 0.5, 60 * 0.5)
+    screen.blit(text1, text_rect1)
+    screen.blit(text2, text_rect2)
 
     # Обновление кнопок
     map_button.update()
